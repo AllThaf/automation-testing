@@ -1,0 +1,50 @@
+# Maven
+/target/
+**/target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# Eclipse
+.settings/
+.classpath
+.project
+.factorypath
+
+# IntelliJ
+*.iml
+*.iws
+*.ipr
+.idea/
+
+# VS Code
+.vscode/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*~
+*.swp
+
+# Cucumber / test output
+/cucumber-report.html
+/test-output/
+
+# OneDrive
+~$*
