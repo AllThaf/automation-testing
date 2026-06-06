@@ -18,7 +18,7 @@ public class CourseOverviewPageActions {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
-        page = new CourseOverviewPage();
+        page = new CourseOverviewPageLocator();
         PageFactory.initElements(driver, page);
     }
 
