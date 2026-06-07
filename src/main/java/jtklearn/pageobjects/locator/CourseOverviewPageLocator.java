@@ -21,5 +21,8 @@ public class CourseOverviewPageLocator {
     @FindBy(css = ".swal2-container")
     public WebElement popupContainer;
 
-}
+    // Tombol OK
+    @FindBy(css = ".swal2-confirm.swal2-styled")
+    public WebElement okButton;
 
+}

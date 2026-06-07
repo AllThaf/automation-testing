@@ -47,4 +47,9 @@ public class CourseOverviewPageActions {
         wait.until(ExpectedConditions.visibilityOf(page.popupMessage));
         return page.popupMessage.getText();
     }
+
+    public void clickOkButton() {
+        wait.until(ExpectedConditions.elementToBeClickable(page.okButton));
+        page.okButton.click();
+    }
 }
