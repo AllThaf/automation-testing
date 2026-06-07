@@ -12,4 +12,7 @@ public class DashboardPageLocator {
 
     @FindBy(css = ".nav-name.dropdown > a.nav-link")
     public WebElement profileDropdown;
+
+    @FindBy(id = "completed-tab")
+    public WebElement completedTab;
 }
