@@ -1,78 +1,62 @@
 package jtklearn.stepdefinitions;
 
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
 import jtklearn.pageobjects.actions.CourseOverviewPageActions;
 import jtklearn.pageobjects.actions.DashboardPageActions;
 import jtklearn.pageobjects.actions.LoginPageActions;
+
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CourseOverviewSteps {
 
-    private WebDriver driver;
     private LoginPageActions loginPage;
     private DashboardPageActions dashboardPage;
     private CourseOverviewPageActions courseOverviewPage;
 
-    private static final String BASE_URL =
-            "https://polban-space.cloudias79.com/jtk-learn/";
-    private static final String PELAJAR_EMAIL    = "nadia@example.com";
-    private static final String PELAJAR_PASSWORD = "12345678";
+    private static final String BASE_URL = "https://polban-space.cloudias79.com/jtk-learn/";
 
-    @Before
-    public void setUp() {
-        ChromeOptions options = new ChromeOptions();
-        // options.addArguments("--headless"); // aktifkan jika ingin headless
-        driver = new ChromeDriver(options);
-        driver.manage().window().maximize();
+    private WebDriver driver() {
+        return DriverManager.getDriver();
     }
 
-    @After
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
-    }
+    // ========================================================================
+    // COMMON LOGIN STEP — dipakai oleh semua skenario
+    // ========================================================================
 
-    // ─── Precondition Steps ──────────────────────────────────────────────────────
-
-    @Given("pelajar sudah login")
-    public void pelajar_sudah_login() {
-        driver.get(BASE_URL);
-        loginPage = new LoginPageActions(driver);
-        loginPage.enterEmail(PELAJAR_EMAIL);
-        loginPage.enterPassword(PELAJAR_PASSWORD);
+    @Given("pengguna login sebagai Pelajar dengan email {string} dan password {string}")
+    public void pengguna_login_sebagai_pelajar_dengan_email_dan_password(String email, String password) {
+        driver().get(BASE_URL);
+        loginPage = new LoginPageActions(driver());
+        loginPage.enterEmail(email);
+        loginPage.enterPassword(password);
         loginPage.clickLogin();
     }
 
+    // ========================================================================
+    // TC NADIA — Daftar tanpa kode pendaftaran
+    // ========================================================================
+
     @And("pelajar belum terdaftar pada kursus {string}")
     public void pelajar_belum_terdaftar_pada_kursus(String courseTitle) {
-        // Precondition diverifikasi secara manual / data sudah disiapkan di DB.
-        // Step ini sengaja dikosongkan — tidak ada tindakan otomatis yang diperlukan.
         System.out.println("PRECONDITION: Pelajar belum terdaftar pada kursus: " + courseTitle);
     }
 
     @And("halaman Course Overview kursus {string} terbuka")
     public void halaman_course_overview_kursus_terbuka(String courseTitle) {
-        dashboardPage = new DashboardPageActions(driver);
+        dashboardPage = new DashboardPageActions(driver());
         dashboardPage.clickCourseByName(courseTitle);
-        courseOverviewPage = new CourseOverviewPageActions(driver);
+        courseOverviewPage = new CourseOverviewPageActions(driver());
     }
-
-    // ─── TC05 — Daftar tanpa kode pendaftaran ───────────────────────────────────
 
     @When("pelajar membiarkan field {string} kosong")
     public void pelajar_membiarkan_field_kosong(String fieldName) {
         if ("Kode Pendaftaran".equals(fieldName)) {
-            // Field tidak diisi — tidak ada aksi, dibiarkan kosong
             System.out.println("STEP: Field '" + fieldName + "' dibiarkan kosong.");
         } else {
             throw new IllegalArgumentException("Field tidak dikenal: " + fieldName);
@@ -88,8 +72,6 @@ public class CourseOverviewSteps {
         }
     }
 
-    // ─── Expected Result Steps ───────────────────────────────────────────────────
-
     @Then("sistem menampilkan pesan error {string}")
     public void sistem_menampilkan_pesan_error(String expectedMessage) {
         assertThat(courseOverviewPage.isPopupModalDisplayed())
@@ -104,14 +86,14 @@ public class CourseOverviewSteps {
 
     @And("halaman tidak berpindah")
     public void halaman_tidak_berpindah() {
-        assertThat(driver.getCurrentUrl())
+        assertThat(driver().getCurrentUrl())
                 .as("URL tidak boleh berubah setelah klik Daftar tanpa kode")
                 .contains("jtk-learn");
     }
 
     @And("pelajar tetap berada pada halaman Course Overview")
     public void pelajar_tetap_berada_pada_halaman_course_overview() {
-        assertThat(driver.getCurrentUrl())
+        assertThat(driver().getCurrentUrl())
                 .as("Pengguna harus tetap di halaman Course Overview")
                 .doesNotContain("dashboard")
                 .doesNotContain("login");
@@ -119,104 +101,61 @@ public class CourseOverviewSteps {
 
     @And("pendaftaran kursus tidak diproses")
     public void pendaftaran_kursus_tidak_diproses() {
-        // Dikonfirmasi melalui step DB di bawah — tidak ada tindakan UI tambahan
         System.out.println("STEP: Pendaftaran tidak diproses — dikonfirmasi via cek DB.");
     }
 
     @And("tidak ada record baru yang ditambahkan ke tabel {string}")
     public void tidak_ada_record_baru_ditambahkan_ke_tabel(String tableName) {
-        // Verifikasi DB di luar scope Selenium.
-        // Dalam implementasi penuh, gunakan JDBC atau API endpoint untuk mengecek tabel.
         System.out.println(
                 "STEP: Verifikasi tabel '" + tableName + "' — tidak ada record baru. " +
                 "(Perlu validasi manual atau koneksi DB)"
         );
     }
+
     // ========================================================================
-// TC-04 - Memverifikasi tampilan Course Overview untuk Pelajar yang sudah
-// menyelesaikan seluruh kursus (progress 100%)
-// ========================================================================
+    // TC FITRI — Course Overview progress 100%
+    // ========================================================================
 
-@Given("Pengguna memiliki akun Pelajar yang memiliki minimal satu kursus dengan status selesai progress 100%")
-public void pengguna_memiliki_akun_pelajar_yang_memiliki_minimal_satu_kursus_dengan_status_selesai_progress_100() {
+    @When("pengguna mengakses halaman Kursus Saya")
+    public void pengguna_mengakses_halaman_kursus_saya() {
+        dashboardPage = new DashboardPageActions(driver());
+        System.out.println("STEP: Mengakses halaman Kursus Saya");
+    }
 
-    driver.get(BASE_URL);
+    @Then("halaman Course Overview berhasil ditampilkan")
+    public void halaman_course_overview_berhasil_ditampilkan() {
+        assertThat(driver().getCurrentUrl()).contains("jtk-learn");
+    }
 
-    loginPage = new LoginPageActions(driver);
+    @When("pengguna memilih tab {string}")
+    public void pengguna_memilih_tab(String tabName) {
+        System.out.println("STEP: Memilih tab " + tabName);
+    }
 
-    loginPage.enterEmail("fitri.salwa.tif423@polban.ac.id");
-    loginPage.enterPassword("*Polban823#");
-    loginPage.clickLogin();
-}
+    @And("kursus {string} ditemukan dalam daftar kursus selesai")
+    public void kursus_ditemukan_dalam_daftar_kursus_selesai(String courseTitle) {
+        assertThat(driver().getPageSource()).contains(courseTitle);
+    }
 
-@When("Klik menu Kursus Saya pada navigasi aplikasi")
-public void klik_menu_kursus_saya_pada_navigasi_aplikasi() {
+    @And("kursus {string} memiliki indikator progress 100 persen")
+    public void kursus_memiliki_indikator_progress_100_persen(String courseTitle) {
+        assertThat(driver().getPageSource()).contains("100%");
+    }
 
-    dashboardPage = new DashboardPageActions(driver);
+    @When("pengguna mengklik kursus {string}")
+    public void pengguna_mengklik_kursus(String courseTitle) {
+        dashboardPage = new DashboardPageActions(driver());
+        dashboardPage.clickCourseByName(courseTitle);
+        courseOverviewPage = new CourseOverviewPageActions(driver());
+    }
 
-    // sesuaikan jika sudah ada method khusus
-    System.out.println("STEP: Klik menu Kursus Saya");
-}
+    @Then("halaman detail kursus berhasil terbuka")
+    public void halaman_detail_kursus_berhasil_terbuka() {
+        assertThat(driver().getCurrentUrl()).contains("jtk-learn");
+    }
 
-@And("Klik menu Selesai pada navigasi untuk menampilkan daftar kursus yang telah diselesaikan")
-public void klik_menu_selesai_pada_navigasi_untuk_menampilkan_daftar_kursus_yang_telah_diselesaikan() {
-
-    System.out.println("STEP: Klik menu Selesai");
-}
-
-@And("Verifikasi bahwa kursus Komdatjar muncul pada daftar kursus selesai")
-public void verifikasi_bahwa_kursus_komdatjar_muncul_pada_daftar_kursus_selesai() {
-
-    assertThat(driver.getPageSource())
-            .contains("Komdatjar");
-}
-
-@And("Verifikasi bahwa progress kursus Komdatjar ditampilkan sebesar 100%")
-public void verifikasi_bahwa_progress_kursus_komdatjar_ditampilkan_sebesar_100_persen() {
-
-    assertThat(driver.getPageSource())
-            .contains("100%");
-}
-
-@Then("Pengguna berhasil login ke sistem JTKLearn sebagai Pelajar")
-public void pengguna_berhasil_login_ke_sistem_jtklearn_sebagai_pelajar() {
-
-    assertThat(driver.getCurrentUrl())
-            .contains("dashboard");
-}
-
-@And("Dashboard atau halaman utama Pelajar berhasil ditampilkan")
-public void dashboard_atau_halaman_utama_pelajar_berhasil_ditampilkan() {
-
-    assertThat(driver.getCurrentUrl())
-            .contains("dashboard");
-}
-
-@And("Menu Kursus Saya dapat diakses tanpa error")
-public void menu_kursus_saya_dapat_diakses_tanpa_error() {
-
-    assertThat(driver.getCurrentUrl())
-            .contains("jtk-learn");
-}
-
-@And("Tab Selesai menampilkan daftar kursus yang telah diselesaikan")
-public void tab_selesai_menampilkan_daftar_kursus_yang_telah_diselesaikan() {
-
-    assertThat(driver.getPageSource())
-            .contains("Komdatjar");
-}
-
-@And("Kursus Komdatjar ditemukan pada daftar kursus selesai")
-public void kursus_komdatjar_ditemukan_pada_daftar_kursus_selesai() {
-
-    assertThat(driver.getPageSource())
-            .contains("Komdatjar");
-}
-
-@And("Progress kursus Komdatjar ditampilkan sebesar 100%")
-public void progress_kursus_komdatjar_ditampilkan_sebesar_100() {
-
-    assertThat(driver.getPageSource())
-            .contains("100%");
-}
+    @And("tidak ada aktivitas atau materi yang masih harus diselesaikan")
+    public void tidak_ada_aktivitas_atau_materi_yang_masih_harus_diselesaikan() {
+        assertThat(driver().getPageSource()).doesNotContain("Lanjutkan");
+    }
 }

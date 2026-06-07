@@ -1,3 +1,4 @@
 jtklearn\Runner\RunCucumberTest.class
+jtklearn\stepdefinitions\DriverManager.class
 jtklearn\stepdefinitions\LoginSteps.class
 jtklearn\stepdefinitions\CourseOverviewSteps.class

@@ -5,7 +5,7 @@ Background:
     And pengguna mengakses URL "https://polban-space.cloudias79.com/jtk-learn/"
     And pengguna belum memiliki session login aktif
 
-@login1.2 @positif @Nadia
+@login1.2 @Negatif @Nadia
 Scenario: Login gagal dengan username yang tidak terdaftar di sistem
     When sistem menampilkan halaman login
     And pengguna mengisi field "Email" dengan "evanlee@gmail.com"

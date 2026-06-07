@@ -40,7 +40,7 @@ public class DashboardPageActions {
     public boolean isCourseCardDisplayed(String courseTitle) {
         try {
             By courseCardLocator =
-                    By.xpath("//h6[@class='custom-card-title' and text()='" + courseTitle + "'");
+                    By.xpath("//h6[@class='custom-card-title' and text()='" + courseTitle + "']");
 
             return wait.until(
                     ExpectedConditions.visibilityOfElementLocated(courseCardLocator)
