@@ -12,4 +12,7 @@ public class DashboardPageLocator {
 
     @FindBy(css = ".nav-name.dropdown > a.nav-link")
     public WebElement profileDropdown;
+
+    @FindBy(xpath = "//button[contains(text(),'Keluar')] | //a[contains(text(),'Keluar')]")
+    public WebElement logoutButton;
 }

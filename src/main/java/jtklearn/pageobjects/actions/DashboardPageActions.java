@@ -85,16 +85,10 @@ public class DashboardPageActions {
 
         try {
 
-            By logoutLocator = By.xpath(
-                    "//a[contains(text(),'Keluar')" +
-                    " or contains(translate(text(), 'OUT', 'out'), 'out')" +
-                    " or contains(@href, 'logout')]"
-            );
+            wait.until(ExpectedConditions.visibilityOf(page.logoutButton));
 
-            WebElement logoutButton = driver.findElement(logoutLocator);
-
-            if (logoutButton.isDisplayed()) {
-                logoutButton.click();
+            if (page.logoutButton.isDisplayed()) {
+                page.logoutButton.click();
 
                 System.out.println(
                         "LOGINFO: Tombol Keluar berhasil diklik secara normal."
