@@ -51,15 +51,40 @@ public class DashboardPageActions {
         }
     }
 
-    public void clickCourseByName(String courseTitle) {
-        By courseCardLocator =
-                By.xpath("//h6[@class='custom-card-title' and text()='" + courseTitle + "']");
+    public void clickCourseByName(String courseName) {
 
-        WebElement courseCard =
-                wait.until(ExpectedConditions.elementToBeClickable(courseCardLocator));
 
-        courseCard.click();
-    }
+By locator = By.xpath(
+        "//h6[contains(@class,'custom-card-title') and normalize-space()='"
+                + courseName + "']"
+);
+
+WebElement course = wait.until(
+        ExpectedConditions.visibilityOfElementLocated(locator)
+);
+
+((JavascriptExecutor) driver)
+        .executeScript(
+                "arguments[0].scrollIntoView({block:'center'});",
+                course
+        );
+
+wait.until(ExpectedConditions.elementToBeClickable(course));
+
+try {
+    course.click();
+} catch (Exception e) {
+
+    ((JavascriptExecutor) driver)
+            .executeScript(
+                    "arguments[0].click();",
+                    course
+            );
+}
+
+
+}
+
 
     public void clickAccountDropdown() {
         wait.until(ExpectedConditions.visibilityOf(page.profileDropdown));
@@ -115,4 +140,14 @@ public class DashboardPageActions {
                 "LOGINFO: Sesi dibersihkan mutlak. Browser dialihkan kembali ke gerbang login."
         );
     }
+    public void clickCompletedTab() {
+
+    wait.until(
+            ExpectedConditions.elementToBeClickable(
+                    page.completedTab
+            )
+    );
+
+    page.completedTab.click();
+}
 }

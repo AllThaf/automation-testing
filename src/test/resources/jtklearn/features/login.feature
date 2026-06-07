@@ -24,8 +24,8 @@ Scenario: Memverifikasi login berhasil sebagai Pelajar
     And pengguna mengakses URL "https://polban-space.cloudias79.com/jtk-learn/"
     And pengguna belum memiliki session login aktif
     When sistem menampilkan halaman login
-    And pengguna mengisi field "Email" dengan "salwafitri@gmail.com"
-    And pengguna mengisi field "Password" dengan "Salwa123#"
+    And pengguna mengisi field "Email" dengan "fitri.salwa.tif423@polban.ac.id"
+    And pengguna mengisi field "Password" dengan "fitri123"
     And pengguna menekan tombol "Masuk"
     Then sistem memvalidasi kredensial berhasil
     And pengguna diarahkan ke halaman dashboard Pelajar

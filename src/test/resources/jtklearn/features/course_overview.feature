@@ -1,7 +1,7 @@
 Feature: Course Overview Funcionality 
 
 
-@Nadia @negatif
+@TC-05 @Nadia @negatif
 Scenario: Verifikasi pesan error saat tombol Daftar diklik tanpa mengisi kode pendaftaran
     Given pengguna login sebagai Pelajar dengan email "nadia.rachma.tif423@polban.ac.id" dan password "nadia123"
     And pelajar belum terdaftar pada kursus "Contoh Kursus"
@@ -13,8 +13,7 @@ Scenario: Verifikasi pesan error saat tombol Daftar diklik tanpa mengisi kode pe
     And pelajar tetap berada pada halaman Course Overview
     And pendaftaran kursus tidak diproses
     And tidak ada record baru yang ditambahkan ke tabel "COURSEPARTICIPANT"
-
-@Fitri 
+@TC-04 @Fitri 
 Scenario: TC-04 Course Overview menampilkan kursus Komdatjar dengan progress 100 persen
     Given pengguna login sebagai Pelajar dengan email "fitri.salwa.tif423@polban.ac.id" dan password "fitri123"
     When pengguna mengakses halaman Kursus Saya

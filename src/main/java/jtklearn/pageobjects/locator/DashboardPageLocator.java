@@ -15,4 +15,7 @@ public class DashboardPageLocator {
 
     @FindBy(xpath = "//button[contains(text(),'Keluar')] | //a[contains(text(),'Keluar')]")
     public WebElement logoutButton;
+
+    @FindBy(id = "completed-tab")
+    public WebElement completedTab;
 }
