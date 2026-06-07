@@ -10,12 +10,10 @@ import java.time.Duration;
 
 public class LoginPageActions {
 
-    private final WebDriver driver;
     private final WebDriverWait wait;
-    private final LoginPage page;
+    private final LoginPageLocator page;
 
     public LoginPageActions(WebDriver driver) {
-        this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
         page = new LoginPageLocator();
@@ -45,6 +43,4 @@ public class LoginPageActions {
         wait.until(ExpectedConditions.visibilityOf(page.errorMessage));
         return page.errorMessage.getText();
     }
-
 }
-

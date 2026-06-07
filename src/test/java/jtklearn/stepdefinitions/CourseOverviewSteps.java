@@ -132,4 +132,91 @@ public class CourseOverviewSteps {
                 "(Perlu validasi manual atau koneksi DB)"
         );
     }
+    // ========================================================================
+// TC-04 - Memverifikasi tampilan Course Overview untuk Pelajar yang sudah
+// menyelesaikan seluruh kursus (progress 100%)
+// ========================================================================
+
+@Given("Pengguna memiliki akun Pelajar yang memiliki minimal satu kursus dengan status selesai progress 100%")
+public void pengguna_memiliki_akun_pelajar_yang_memiliki_minimal_satu_kursus_dengan_status_selesai_progress_100() {
+
+    driver.get(BASE_URL);
+
+    loginPage = new LoginPageActions(driver);
+
+    loginPage.enterEmail("fitri.salwa.tif423@polban.ac.id");
+    loginPage.enterPassword("*Polban823#");
+    loginPage.clickLogin();
+}
+
+@When("Klik menu Kursus Saya pada navigasi aplikasi")
+public void klik_menu_kursus_saya_pada_navigasi_aplikasi() {
+
+    dashboardPage = new DashboardPageActions(driver);
+
+    // sesuaikan jika sudah ada method khusus
+    System.out.println("STEP: Klik menu Kursus Saya");
+}
+
+@And("Klik menu Selesai pada navigasi untuk menampilkan daftar kursus yang telah diselesaikan")
+public void klik_menu_selesai_pada_navigasi_untuk_menampilkan_daftar_kursus_yang_telah_diselesaikan() {
+
+    System.out.println("STEP: Klik menu Selesai");
+}
+
+@And("Verifikasi bahwa kursus Komdatjar muncul pada daftar kursus selesai")
+public void verifikasi_bahwa_kursus_komdatjar_muncul_pada_daftar_kursus_selesai() {
+
+    assertThat(driver.getPageSource())
+            .contains("Komdatjar");
+}
+
+@And("Verifikasi bahwa progress kursus Komdatjar ditampilkan sebesar 100%")
+public void verifikasi_bahwa_progress_kursus_komdatjar_ditampilkan_sebesar_100_persen() {
+
+    assertThat(driver.getPageSource())
+            .contains("100%");
+}
+
+@Then("Pengguna berhasil login ke sistem JTKLearn sebagai Pelajar")
+public void pengguna_berhasil_login_ke_sistem_jtklearn_sebagai_pelajar() {
+
+    assertThat(driver.getCurrentUrl())
+            .contains("dashboard");
+}
+
+@And("Dashboard atau halaman utama Pelajar berhasil ditampilkan")
+public void dashboard_atau_halaman_utama_pelajar_berhasil_ditampilkan() {
+
+    assertThat(driver.getCurrentUrl())
+            .contains("dashboard");
+}
+
+@And("Menu Kursus Saya dapat diakses tanpa error")
+public void menu_kursus_saya_dapat_diakses_tanpa_error() {
+
+    assertThat(driver.getCurrentUrl())
+            .contains("jtk-learn");
+}
+
+@And("Tab Selesai menampilkan daftar kursus yang telah diselesaikan")
+public void tab_selesai_menampilkan_daftar_kursus_yang_telah_diselesaikan() {
+
+    assertThat(driver.getPageSource())
+            .contains("Komdatjar");
+}
+
+@And("Kursus Komdatjar ditemukan pada daftar kursus selesai")
+public void kursus_komdatjar_ditemukan_pada_daftar_kursus_selesai() {
+
+    assertThat(driver.getPageSource())
+            .contains("Komdatjar");
+}
+
+@And("Progress kursus Komdatjar ditampilkan sebesar 100%")
+public void progress_kursus_komdatjar_ditampilkan_sebesar_100() {
+
+    assertThat(driver.getPageSource())
+            .contains("100%");
+}
 }

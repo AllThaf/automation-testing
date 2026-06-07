@@ -1,5 +1,6 @@
 package jtklearn.pageobjects.actions;
 
+import jtklearn.pageobjects.locator.DashboardPageLocator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -16,13 +17,13 @@ public class DashboardPageActions {
 
     private final WebDriver driver;
     private final WebDriverWait wait;
-    private final DashboardPage page;
+    private final DashboardPageLocator page;
 
     public DashboardPageActions(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
-        page = new DashboardPage();
+        page = new DashboardPageLocator();
         PageFactory.initElements(driver, page);
     }
 

@@ -1,6 +1,6 @@
 package jtklearn.pageobjects.actions;
 
-import jtklearn.pageobjects.CourseOverviewPageLocator;
+import jtklearn.pageobjects.locator.CourseOverviewPageLocator;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -12,7 +12,7 @@ public class CourseOverviewPageActions {
 
     private final WebDriver driver;
     private final WebDriverWait wait;
-    private final CourseOverviewPage page;
+    private final CourseOverviewPageLocator page;
 
     public CourseOverviewPageActions(WebDriver driver) {
         this.driver = driver;

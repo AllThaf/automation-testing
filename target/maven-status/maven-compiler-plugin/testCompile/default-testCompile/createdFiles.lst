@@ -1,3 +1,3 @@
-cucumber\IsItFriday.class
-cucumber\RunCucumberTest.class
-cucumber\StepDefinitions.class
+jtklearn\Runner\RunCucumberTest.class
+jtklearn\stepdefinitions\LoginSteps.class
+jtklearn\stepdefinitions\CourseOverviewSteps.class
