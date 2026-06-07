@@ -9,7 +9,11 @@ import jtklearn.pageobjects.actions.CourseOverviewPageActions;
 import jtklearn.pageobjects.actions.DashboardPageActions;
 import jtklearn.pageobjects.actions.LoginPageActions;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,6 +55,13 @@ public class CourseOverviewSteps {
     public void halaman_course_overview_kursus_terbuka(String courseTitle) {
         dashboardPage = new DashboardPageActions(driver());
         dashboardPage.clickCourseByName(courseTitle);
+        try {
+            new WebDriverWait(driver(), Duration.ofSeconds(10))
+                    .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//*[text()='Loading...']")));
+        } catch (Exception e) {
+            System.out.println("DEBUG: Loading... did not disappear in 10s");
+        }
+        System.out.println("DEBUG_DOM_START\n" + driver().getPageSource() + "\nDEBUG_DOM_END");
         courseOverviewPage = new CourseOverviewPageActions(driver());
     }
 
@@ -108,8 +119,7 @@ public class CourseOverviewSteps {
     public void tidak_ada_record_baru_ditambahkan_ke_tabel(String tableName) {
         System.out.println(
                 "STEP: Verifikasi tabel '" + tableName + "' — tidak ada record baru. " +
-                "(Perlu validasi manual atau koneksi DB)"
-        );
+                        "(Perlu validasi manual atau koneksi DB)");
     }
 
     // ========================================================================
@@ -157,5 +167,22 @@ public class CourseOverviewSteps {
     @And("tidak ada aktivitas atau materi yang masih harus diselesaikan")
     public void tidak_ada_aktivitas_atau_materi_yang_masih_harus_diselesaikan() {
         assertThat(driver().getPageSource()).doesNotContain("Lanjutkan");
+    }
+
+    // ========================================================================
+    // TC THAFA — Verifikasi enroll dengan kode yang salah
+    // Hanya menambahkan, hampir semuanya sudah terdefinisi di TC NINDA
+    // ========================================================================
+
+    @When("pelajar memasukkan kode {string}")
+    public void pelajar_memasukkan_kode(String code) {
+        courseOverviewPage = new CourseOverviewPageActions(driver());
+        courseOverviewPage.enterRegistrationCode(code);
+    }
+
+    @And("pelajar menekan tombol OK")
+    public void pelajar_menekan_tombol_ok() {
+        courseOverviewPage = new CourseOverviewPageActions(driver());
+        courseOverviewPage.clickOkButton();
     }
 }

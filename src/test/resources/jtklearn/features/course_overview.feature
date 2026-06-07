@@ -13,6 +13,7 @@ Scenario: Verifikasi pesan error saat tombol Daftar diklik tanpa mengisi kode pe
     And pelajar tetap berada pada halaman Course Overview
     And pendaftaran kursus tidak diproses
     And tidak ada record baru yang ditambahkan ke tabel "COURSEPARTICIPANT"
+
 @Fitri 
 Scenario: TC-04 Course Overview menampilkan kursus Komdatjar dengan progress 100 persen
     Given pengguna login sebagai Pelajar dengan email "fitri.salwa.tif423@polban.ac.id" dan password "fitri123"
@@ -24,3 +25,18 @@ Scenario: TC-04 Course Overview menampilkan kursus Komdatjar dengan progress 100
     When pengguna mengklik kursus "Komdatjar"
     Then halaman detail kursus berhasil terbuka
     And tidak ada aktivitas atau materi yang masih harus diselesaikan
+
+@TC_10 @Thafa
+Scenario: Verifikasi pesan error saat kode pendaftaran salah/tidak cocok dengan kursus
+    Given pengguna login sebagai Pelajar dengan email "thafa@example.com" dan password "thafa"
+    And pelajar belum terdaftar pada kursus "Komdatjar"
+    And halaman Course Overview kursus "Komdatjar" terbuka
+    When pelajar memasukkan kode "dummykey"
+    And pelajar menekan tombol "Daftar"
+    Then sistem menampilkan pesan error "Kode Pendaftaran yang Anda masukkan tidak valid. Silakan coba lagi!"
+    And pelajar menekan tombol OK
+    And halaman tidak berpindah
+    And pelajar tetap berada pada halaman Course Overview
+    And pendaftaran kursus tidak diproses
+    And tidak ada record baru yang ditambahkan ke tabel "COURSEPARTICIPANT"
+
