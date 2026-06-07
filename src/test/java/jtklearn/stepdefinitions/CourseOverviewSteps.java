@@ -11,15 +11,9 @@ import jtklearn.pageobjects.actions.LoginPageActions;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-<<<<<<< HEAD
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-=======
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
->>>>>>> 377c5a5e42769bd73dc8e8087d0be1e29b4fad5e
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,8 +48,7 @@ public class CourseOverviewSteps {
 
         // Tunggu halaman login benar-benar muncul
         getWait().until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("input[type='email'], input[type='text']")
-        ));
+                By.cssSelector("input[type='email'], input[type='text']")));
 
         loginPage = new LoginPageActions(driver());
         loginPage.enterEmail(email);
@@ -176,9 +169,8 @@ public class CourseOverviewSteps {
         try {
             WebElement myCourseLink = getWait().until(
                     ExpectedConditions.elementToBeClickable(
-                            By.xpath("//*[contains(text(),'Kursus Saya') or contains(@href,'my-course') or contains(@href,'kursus-saya')]")
-                    )
-            );
+                            By.xpath(
+                                    "//*[contains(text(),'Kursus Saya') or contains(@href,'my-course') or contains(@href,'kursus-saya')]")));
             myCourseLink.click();
         } catch (Exception e) {
             // Fallback: navigasi langsung ke URL "Kursus Saya" jika elemen tidak ditemukan
@@ -191,9 +183,7 @@ public class CourseOverviewSteps {
                 ExpectedConditions.urlContains("my-course"),
                 ExpectedConditions.urlContains("kursus-saya"),
                 ExpectedConditions.presenceOfElementLocated(
-                        By.xpath("//*[contains(text(),'Kursus Saya')]")
-                )
-        ));
+                        By.xpath("//*[contains(text(),'Kursus Saya')]"))));
 
         System.out.println("STEP: Halaman Kursus Saya berhasil diakses. URL: " + driver().getCurrentUrl());
     }
@@ -202,8 +192,7 @@ public class CourseOverviewSteps {
     public void halaman_course_overview_berhasil_ditampilkan() {
         // Tunggu halaman stabil & verifikasi bukan halaman login
         getWait().until(ExpectedConditions.not(
-                ExpectedConditions.urlToBe(BASE_URL)
-        ));
+                ExpectedConditions.urlToBe(BASE_URL)));
 
         String currentUrl = driver().getCurrentUrl();
         String pageSource = driver().getPageSource();
@@ -226,9 +215,8 @@ public class CourseOverviewSteps {
         try {
             WebElement tab = getWait().until(
                     ExpectedConditions.elementToBeClickable(
-                            By.xpath("//*[contains(text(),'" + tabName + "') and (self::button or self::a or self::li or self::span)]")
-                    )
-            );
+                            By.xpath("//*[contains(text(),'" + tabName
+                                    + "') and (self::button or self::a or self::li or self::span)]")));
             tab.click();
             System.out.println("STEP: Tab '" + tabName + "' berhasil diklik.");
         } catch (Exception e) {
@@ -236,9 +224,7 @@ public class CourseOverviewSteps {
             try {
                 WebElement tab = getWait().until(
                         ExpectedConditions.elementToBeClickable(
-                                By.xpath("//*[@role='tab' and contains(text(),'" + tabName + "')]")
-                        )
-                );
+                                By.xpath("//*[@role='tab' and contains(text(),'" + tabName + "')]")));
                 tab.click();
                 System.out.println("STEP: Tab '" + tabName + "' berhasil diklik via role=tab.");
             } catch (Exception ex) {
@@ -247,7 +233,10 @@ public class CourseOverviewSteps {
         }
 
         // Beri waktu konten tab ter-render
-        try { Thread.sleep(1500); } catch (InterruptedException ignored) {}
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException ignored) {
+        }
     }
 
     @And("kursus {string} ditemukan dalam daftar kursus selesai")
@@ -256,9 +245,7 @@ public class CourseOverviewSteps {
         try {
             getWait().until(
                     ExpectedConditions.presenceOfElementLocated(
-                            By.xpath("//*[contains(text(),'" + courseTitle + "')]")
-                    )
-            );
+                            By.xpath("//*[contains(text(),'" + courseTitle + "')]")));
         } catch (Exception e) {
             // Tampilkan URL & sepotong page source untuk debugging
             System.out.println("DEBUG URL: " + driver().getCurrentUrl());
@@ -291,9 +278,7 @@ public class CourseOverviewSteps {
         try {
             WebElement courseElement = getWait().until(
                     ExpectedConditions.elementToBeClickable(
-                            By.xpath("//*[contains(text(),'" + courseTitle + "')]")
-                    )
-            );
+                            By.xpath("//*[contains(text(),'" + courseTitle + "')]")));
             courseElement.click();
         } catch (Exception e) {
             // Fallback via DashboardPageActions
@@ -305,7 +290,10 @@ public class CourseOverviewSteps {
 
         // Tunggu halaman detail kursus termuat
         getWait().until(ExpectedConditions.urlContains("jtk-learn"));
-        try { Thread.sleep(1500); } catch (InterruptedException ignored) {}
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException ignored) {
+        }
 
         System.out.println("STEP: Kursus '" + courseTitle + "' diklik. URL: " + driver().getCurrentUrl());
     }
@@ -330,7 +318,8 @@ public class CourseOverviewSteps {
     public void tidak_ada_aktivitas_atau_materi_yang_masih_harus_diselesaikan() {
         String pageSource = driver().getPageSource();
 
-        // Verifikasi tidak ada tombol/teks yang mengindikasikan ada materi belum selesai
+        // Verifikasi tidak ada tombol/teks yang mengindikasikan ada materi belum
+        // selesai
         assertThat(pageSource)
                 .as("Tidak boleh ada tombol 'Lanjutkan' (semua materi sudah selesai)")
                 .doesNotContain("Lanjutkan");

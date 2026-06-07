@@ -1,12 +1,5 @@
-<<<<<<< HEAD
 D:\Kampus Kemarau\Semester 6\PPL (Testing)\Praktek\P14-P15\automation-testing\src\test\java\jtklearn\Runner\RunCucumberTest.java
 D:\Kampus Kemarau\Semester 6\PPL (Testing)\Praktek\P14-P15\automation-testing\src\test\java\jtklearn\stepdefinitions\CourseOverviewSteps.java
 D:\Kampus Kemarau\Semester 6\PPL (Testing)\Praktek\P14-P15\automation-testing\src\test\java\jtklearn\stepdefinitions\DriverManager.java
 D:\Kampus Kemarau\Semester 6\PPL (Testing)\Praktek\P14-P15\automation-testing\src\test\java\jtklearn\stepdefinitions\LoginSteps.java
 D:\Kampus Kemarau\Semester 6\PPL (Testing)\Praktek\P14-P15\automation-testing\src\test\java\jtklearn\stepdefinitions\LogoutSteps.java
-=======
-C:\Users\USER\OneDrive - Politeknik Negeri Bandung\semester 6\PPL\W15\automation-testing\src\test\java\jtklearn\Runner\RunCucumberTest.java
-C:\Users\USER\OneDrive - Politeknik Negeri Bandung\semester 6\PPL\W15\automation-testing\src\test\java\jtklearn\stepdefinitions\CourseOverviewSteps.java
-C:\Users\USER\OneDrive - Politeknik Negeri Bandung\semester 6\PPL\W15\automation-testing\src\test\java\jtklearn\stepdefinitions\DriverManager.java
-C:\Users\USER\OneDrive - Politeknik Negeri Bandung\semester 6\PPL\W15\automation-testing\src\test\java\jtklearn\stepdefinitions\LoginSteps.java
->>>>>>> 377c5a5e42769bd73dc8e8087d0be1e29b4fad5e
