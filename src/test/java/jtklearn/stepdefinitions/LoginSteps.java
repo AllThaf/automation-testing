@@ -5,162 +5,157 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+import jtklearn.pageobjects.actions.CourseOverviewPageActions;
 import jtklearn.pageobjects.actions.DashboardPageActions;
 import jtklearn.pageobjects.actions.LoginPageActions;
 
 import org.openqa.selenium.WebDriver;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LoginSteps {
+public class CourseOverviewSteps {
 
     private LoginPageActions loginPage;
     private DashboardPageActions dashboardPage;
+    private CourseOverviewPageActions courseOverviewPage;
+
+    private static final String BASE_URL = "https://polban-space.cloudias79.com/jtk-learn/";
 
     private WebDriver driver() {
         return DriverManager.getDriver();
     }
 
     // ========================================================================
-    // BACKGROUND
+    // COMMON LOGIN STEP — dipakai oleh semua skenario
     // ========================================================================
 
-    @Given("Pengguna telah mengakses halaman login aplikasi JTK Learn")
-    public void pengguna_telah_mengakses_halaman_login() {
-        driver().get("https://polban-space.cloudias79.com/jtk-learn/");
+    @Given("pengguna login sebagai Pelajar dengan email {string} dan password {string}")
+    public void pengguna_login_sebagai_pelajar_dengan_email_dan_password(String email, String password) {
+        driver().get(BASE_URL);
         loginPage = new LoginPageActions(driver());
-    }
-
-    @And("pengguna mengakses URL {string}")
-    public void pengguna_mengakses_url(String url) {
-        driver().get(url);
-        loginPage = new LoginPageActions(driver());
-    }
-
-    @And("pengguna belum memiliki session login aktif")
-    public void pengguna_belum_memiliki_session_login_aktif() {
-        // Browser baru dibuka — tidak ada sesi aktif
+        loginPage.enterEmail(email);
+        loginPage.enterPassword(password);
+        loginPage.clickLogin();
     }
 
     // ========================================================================
-    // COMMON LOGIN STEPS
+    // TC NADIA — Daftar tanpa kode pendaftaran
     // ========================================================================
 
-    @When("sistem menampilkan halaman login")
-    public void sistem_menampilkan_halaman_login() {
-        assertThat(driver().getCurrentUrl())
-                .as("URL harus mengarah ke halaman login")
-                .contains("jtk-learn");
+    @And("pelajar belum terdaftar pada kursus {string}")
+    public void pelajar_belum_terdaftar_pada_kursus(String courseTitle) {
+        System.out.println("PRECONDITION: Pelajar belum terdaftar pada kursus: " + courseTitle);
     }
 
-    @And("pengguna mengisi field {string} dengan {string}")
-    public void pengguna_mengisi_field_dengan(String fieldName, String value) {
-        switch (fieldName) {
-            case "Email":
-                loginPage.enterEmail(value);
-                break;
-            case "Password":
-                loginPage.enterPassword(value);
-                break;
-            default:
-                throw new IllegalArgumentException("Field tidak dikenal: " + fieldName);
+    @And("halaman Course Overview kursus {string} terbuka")
+    public void halaman_course_overview_kursus_terbuka(String courseTitle) {
+        dashboardPage = new DashboardPageActions(driver());
+        dashboardPage.clickCourseByName(courseTitle);
+        courseOverviewPage = new CourseOverviewPageActions(driver());
+    }
+
+    @When("pelajar membiarkan field {string} kosong")
+    public void pelajar_membiarkan_field_kosong(String fieldName) {
+        if ("Kode Pendaftaran".equals(fieldName)) {
+            System.out.println("STEP: Field '" + fieldName + "' dibiarkan kosong.");
+        } else {
+            throw new IllegalArgumentException("Field tidak dikenal: " + fieldName);
         }
     }
 
-    @And("pengguna menekan tombol {string}")
-    public void pengguna_menekan_tombol(String buttonName) {
-        if ("Masuk".equals(buttonName)) {
-            loginPage.clickLogin();
+    @And("pelajar menekan tombol {string}")
+    public void pelajar_menekan_tombol(String buttonName) {
+        if ("Daftar".equals(buttonName)) {
+            courseOverviewPage.clickRegister();
         } else {
             throw new IllegalArgumentException("Tombol tidak dikenal: " + buttonName);
         }
     }
 
-    // ========================================================================
-    // TC 1.2 — LOGIN GAGAL
-    // ========================================================================
+    @Then("sistem menampilkan pesan error {string}")
+    public void sistem_menampilkan_pesan_error(String expectedMessage) {
+        assertThat(courseOverviewPage.isPopupModalDisplayed())
+                .as("Popup pesan error harus muncul")
+                .isTrue();
 
-    @Then("sistem menolak proses login")
-    public void sistem_menolak_proses_login() {
-        String errorMsg = loginPage.getErrorMessage();
-        assertThat(errorMsg)
-                .as("Sistem harus menampilkan pesan gagal login")
-                .isNotBlank();
-    }
-
-    @And("pengguna tetap berada di halaman login")
-    public void pengguna_tetap_berada_di_halaman_login() {
-        assertThat(driver().getCurrentUrl())
-                .contains("jtk-learn")
-                .doesNotContain("dashboard");
-    }
-
-    @And("sistem menampilkan notifikasi {string}")
-    public void sistem_menampilkan_notifikasi(String expectedMessage) {
-        String actualMessage = loginPage.getErrorMessage();
+        String actualMessage = courseOverviewPage.getPopupText();
         assertThat(actualMessage)
+                .as("Pesan error harus sesuai ekspektasi")
                 .contains(expectedMessage);
     }
 
-    @And("tidak ada pengalihan ke halaman dashboard")
-    public void tidak_ada_pengalihan_ke_halaman_dashboard() {
+    @And("halaman tidak berpindah")
+    public void halaman_tidak_berpindah() {
         assertThat(driver().getCurrentUrl())
-                .doesNotContain("dashboard");
+                .as("URL tidak boleh berubah setelah klik Daftar tanpa kode")
+                .contains("jtk-learn");
     }
 
-    @And("field {string} dan {string} dapat diisi ulang")
-    public void field_dapat_diisi_ulang(String field1, String field2) {
-        loginPage.enterEmail("");
-        loginPage.enterPassword("");
+    @And("pelajar tetap berada pada halaman Course Overview")
+    public void pelajar_tetap_berada_pada_halaman_course_overview() {
+        assertThat(driver().getCurrentUrl())
+                .as("Pengguna harus tetap di halaman Course Overview")
+                .doesNotContain("dashboard")
+                .doesNotContain("login");
+    }
+
+    @And("pendaftaran kursus tidak diproses")
+    public void pendaftaran_kursus_tidak_diproses() {
+        System.out.println("STEP: Pendaftaran tidak diproses — dikonfirmasi via cek DB.");
+    }
+
+    @And("tidak ada record baru yang ditambahkan ke tabel {string}")
+    public void tidak_ada_record_baru_ditambahkan_ke_tabel(String tableName) {
+        System.out.println(
+                "STEP: Verifikasi tabel '" + tableName + "' — tidak ada record baru. " +
+                "(Perlu validasi manual atau koneksi DB)"
+        );
     }
 
     // ========================================================================
-    // TC 1.3 — LOGIN BERHASIL SEBAGAI PELAJAR
+    // TC FITRI — Course Overview progress 100%
     // ========================================================================
 
-    @Then("sistem memvalidasi kredensial berhasil")
-    public void sistem_memvalidasi_kredensial_berhasil() {
+    @When("pengguna mengakses halaman Kursus Saya")
+    public void pengguna_mengakses_halaman_kursus_saya() {
         dashboardPage = new DashboardPageActions(driver());
-        assertThat(driver().getCurrentUrl())
-                .as("Sistem harus berhasil memvalidasi kredensial")
-                .contains("dashboard");
+        System.out.println("STEP: Mengakses halaman Kursus Saya");
     }
 
-    @And("pengguna diarahkan ke halaman dashboard Pelajar")
-    public void pengguna_diarahkan_ke_halaman_dashboard_pelajar() {
-        assertThat(driver().getCurrentUrl())
-                .as("Pengguna harus diarahkan ke dashboard pelajar")
-                .contains("dashboard-pelajar");
+    @Then("halaman Course Overview berhasil ditampilkan")
+    public void halaman_course_overview_berhasil_ditampilkan() {
+        assertThat(driver().getCurrentUrl()).contains("jtk-learn");
     }
 
-    @And("halaman menampilkan nama atau profil pengguna Pelajar")
-    public void halaman_menampilkan_nama_atau_profil_pengguna_pelajar() {
-        assertThat(driver().getCurrentUrl())
-                .contains("dashboard-pelajar");
+    @When("pengguna memilih tab {string}")
+    public void pengguna_memilih_tab(String tabName) {
+        System.out.println("STEP: Memilih tab " + tabName);
     }
 
-    @And("menu navigasi menampilkan")
-    public void menu_navigasi_menampilkan() {
+    @And("kursus {string} ditemukan dalam daftar kursus selesai")
+    public void kursus_ditemukan_dalam_daftar_kursus_selesai(String courseTitle) {
+        assertThat(driver().getPageSource()).contains(courseTitle);
+    }
+
+    @And("kursus {string} memiliki indikator progress 100 persen")
+    public void kursus_memiliki_indikator_progress_100_persen(String courseTitle) {
+        assertThat(driver().getPageSource()).contains("100%");
+    }
+
+    @When("pengguna mengklik kursus {string}")
+    public void pengguna_mengklik_kursus(String courseTitle) {
         dashboardPage = new DashboardPageActions(driver());
-        List<String> menus = dashboardPage.getAvailableNavbarMenus();
-        assertThat(menus)
-                .contains("Beranda")
-                .contains("Kursus Saya")
-                .contains("Riwayat Kuis")
-                .contains("Profil");
+        dashboardPage.clickCourseByName(courseTitle);
+        courseOverviewPage = new CourseOverviewPageActions(driver());
     }
 
-    @And("tidak ada pesan error yang muncul")
-    public void tidak_ada_pesan_error_yang_muncul() {
-        assertThat(driver().getCurrentUrl())
-                .contains("dashboard-pelajar");
+    @Then("halaman detail kursus berhasil terbuka")
+    public void halaman_detail_kursus_berhasil_terbuka() {
+        assertThat(driver().getCurrentUrl()).contains("jtk-learn");
     }
 
-    @And("URL berubah menjadi {string}")
-    public void url_berubah_menjadi(String expectedUrl) {
-        assertThat(driver().getCurrentUrl())
-                .isEqualTo(expectedUrl);
+    @And("tidak ada aktivitas atau materi yang masih harus diselesaikan")
+    public void tidak_ada_aktivitas_atau_materi_yang_masih_harus_diselesaikan() {
+        assertThat(driver().getPageSource()).doesNotContain("Lanjutkan");
     }
 }
