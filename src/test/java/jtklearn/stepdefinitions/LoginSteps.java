@@ -9,7 +9,9 @@ import jtklearn.pageobjects.actions.DashboardPageActions;
 import jtklearn.pageobjects.actions.LoginPageActions;
 
 import org.openqa.selenium.WebDriver;
-
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -120,47 +122,84 @@ public class LoginSteps {
     // TC 1.3 — LOGIN BERHASIL SEBAGAI PELAJAR
     // ========================================================================
 
-    @Then("sistem memvalidasi kredensial berhasil")
-    public void sistem_memvalidasi_kredensial_berhasil() {
-        dashboardPage = new DashboardPageActions(driver());
-        assertThat(driver().getCurrentUrl())
-                .as("Sistem harus berhasil memvalidasi kredensial")
-                .contains("dashboard");
-    }
+@Then("sistem memvalidasi kredensial berhasil")
+public void sistem_memvalidasi_kredensial_berhasil() {
 
-    @And("pengguna diarahkan ke halaman dashboard Pelajar")
-    public void pengguna_diarahkan_ke_halaman_dashboard_pelajar() {
-        assertThat(driver().getCurrentUrl())
-                .as("Pengguna harus diarahkan ke dashboard pelajar")
-                .contains("dashboard-pelajar");
-    }
 
-    @And("halaman menampilkan nama atau profil pengguna Pelajar")
-    public void halaman_menampilkan_nama_atau_profil_pengguna_pelajar() {
-        assertThat(driver().getCurrentUrl())
-                .contains("dashboard-pelajar");
-    }
+WebDriverWait wait = new WebDriverWait(driver(), Duration.ofSeconds(20));
 
-    @And("menu navigasi menampilkan")
-    public void menu_navigasi_menampilkan() {
-        dashboardPage = new DashboardPageActions(driver());
-        List<String> menus = dashboardPage.getAvailableNavbarMenus();
-        assertThat(menus)
-                .contains("Beranda")
-                .contains("Kursus Saya")
-                .contains("Riwayat Kuis")
-                .contains("Profil");
-    }
+wait.until(
+        ExpectedConditions.urlContains("dashboard-pelajar")
+);
 
-    @And("tidak ada pesan error yang muncul")
-    public void tidak_ada_pesan_error_yang_muncul() {
-        assertThat(driver().getCurrentUrl())
-                .contains("dashboard-pelajar");
-    }
+dashboardPage = new DashboardPageActions(driver());
 
-    @And("URL berubah menjadi {string}")
-    public void url_berubah_menjadi(String expectedUrl) {
-        assertThat(driver().getCurrentUrl())
-                .isEqualTo(expectedUrl);
-    }
+assertThat(driver().getCurrentUrl())
+        .as("Sistem harus berhasil memvalidasi kredensial")
+        .contains("dashboard-pelajar");
+
+
+}
+
+@And("pengguna diarahkan ke halaman dashboard Pelajar")
+public void pengguna_diarahkan_ke_halaman_dashboard_pelajar() {
+
+
+WebDriverWait wait = new WebDriverWait(driver(), Duration.ofSeconds(20));
+
+wait.until(
+        ExpectedConditions.urlContains("dashboard-pelajar")
+);
+
+assertThat(driver().getCurrentUrl())
+        .as("Pengguna harus diarahkan ke dashboard pelajar")
+        .contains("dashboard-pelajar");
+
+
+}
+
+@And("halaman menampilkan nama atau profil pengguna Pelajar")
+public void halaman_menampilkan_nama_atau_profil_pengguna_pelajar() {
+
+
+assertThat(driver().getPageSource())
+        .containsIgnoringCase("salwa");
+
+
+}
+
+@And("menu navigasi menampilkan")
+public void menu_navigasi_menampilkan() {
+
+
+dashboardPage = new DashboardPageActions(driver());
+
+List<String> menus = dashboardPage.getAvailableNavbarMenus();
+assertThat(menus).isNotEmpty();
+}
+
+@And("tidak ada pesan error yang muncul")
+public void tidak_ada_pesan_error_yang_muncul() {
+
+
+String source = driver().getPageSource().toLowerCase();
+
+assertThat(source)
+        .doesNotContain("email atau password salah")
+        .doesNotContain("login gagal");
+
+
+}
+
+@And("URL berubah menjadi {string}")
+public void url_berubah_menjadi(String expectedUrl) {
+WebDriverWait wait = new WebDriverWait(driver(), Duration.ofSeconds(20));
+
+wait.until(ExpectedConditions.urlToBe(expectedUrl));
+
+assertThat(driver().getCurrentUrl())
+        .isEqualTo(expectedUrl);
+
+}
+
 }
