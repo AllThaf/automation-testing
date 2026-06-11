@@ -144,18 +144,6 @@ public class CourseOverviewSteps {
                 .doesNotContain("login");
     }
 
-    @And("pendaftaran kursus tidak diproses")
-    public void pendaftaran_kursus_tidak_diproses() {
-        System.out.println("STEP: Pendaftaran tidak diproses — dikonfirmasi via cek DB.");
-    }
-
-    @And("tidak ada record baru yang ditambahkan ke tabel {string}")
-    public void tidak_ada_record_baru_ditambahkan_ke_tabel(String tableName) {
-        System.out.println(
-                "STEP: Verifikasi tabel '" + tableName + "' — tidak ada record baru. " +
-                        "(Perlu validasi manual atau koneksi DB)");
-    }
-
     // ========================================================================
     // TC FITRI — Course Overview progress 100%
     // ========================================================================
